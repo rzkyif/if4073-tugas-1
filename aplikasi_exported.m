@@ -68,11 +68,15 @@ classdef aplikasi_exported < matlab.apps.AppBase
         function results = GenerateHistogram(~, aImage, aAxis)
 
             % Hitung jumlah tiap gray level dalam gambar
-            results = zeros(256,1);
-            n = numel(aImage);
-            for i = 1:n
-                v = aImage(i);
-                results(v+1) = results(v+1) + 1;
+            results = zeros(256,3);
+            s = size(aImage);
+            for x = 1:s(1)
+                for y = 1:s(2)
+                    for z = 1:s(3)
+                        v = aImage(x,y,z);
+                        results(v+1,z) = results(v+1,z) + 1;
+                    end
+                end
             end
             
             % Tampilkan hasil pada graf
@@ -81,7 +85,11 @@ classdef aplikasi_exported < matlab.apps.AppBase
                 for i = 1:256
                     x(i) = i-1;
                 end
-                bar(aAxis, x, results, 1);
+                b = bar(aAxis, x, results, 1, "hist");
+                b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
+                b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
+                b(3).FaceColor = [0 0 1]; b(3).EdgeColor = 'none';
+                zoom(aAxis,'reset');
             end
         end
         
@@ -100,7 +108,7 @@ classdef aplikasi_exported < matlab.apps.AppBase
         end
         
         % Fungsi perataan histogram
-        function [rImage,rMap] = Equalize(~, aImage, aImageComponent)
+        function results = Equalize(~, aImage, aImageComponent)
 
             % Buat histogram dari gambar
             N = zeros(256,1);
@@ -111,18 +119,17 @@ classdef aplikasi_exported < matlab.apps.AppBase
             end
 
             % Buat peta transformasi
-            rMap = cumsum(N / n) * 255;
-            roundedMap = round(rMap);
+            map = round(cumsum(N / n) * 255);
 
             % Terapkan peta transformasi pada gambar
-            rImage = aImage;
+            results = aImage;
             for i = 1:n
-                rImage(i) = roundedMap(rImage(i)+1);
+                results(i) = map(results(i)+1);
             end
 
             % Tampilkan hasil pada graf
             if exist('aImageComponent', 'var')
-                aImageComponent.ImageSource = rImage;
+                aImageComponent.ImageSource = results;
             end
         end
         
@@ -231,7 +238,11 @@ classdef aplikasi_exported < matlab.apps.AppBase
         % Button pushed function: ShowimhistforComparisonButton
         function ShowimhistforComparisonButtonPushed(app, event)
             app.CurrentImage = imread(strcat('images/', app.ImageListBoxHist.Value));
-            figure,imhist(app.CurrentImage);
+            N = [imhist(app.CurrentImage(:,:,1)) imhist(app.CurrentImage(:,:,2)) imhist(app.CurrentImage(:,:,3))];
+            b = bar(N, 1, "hist");
+            b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
+            b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
+            b(3).FaceColor = [0 0 1]; b(3).EdgeColor = 'none';
         end
 
         % Value changed function: ImageListBoxCont
@@ -255,9 +266,14 @@ classdef aplikasi_exported < matlab.apps.AppBase
         % Button pushed function: ShowhisteqforComparisonButton
         function ShowhisteqforComparisonButtonPushed(app, event)
             app.CurrentImage = imread(strcat('images/', app.ImageListBoxEqua.Value));
-            b = histeq(app.CurrentImage, 256);
-            figure,imshow(b);
-            figure,imhist(b);
+            eq = histeq(app.CurrentImage, 256);
+            figure,imshow(eq);
+            figure
+            N = [imhist(eq(:,:,1)) imhist(eq(:,:,2)) imhist(eq(:,:,3))];
+            b = bar(N, 1, "hist");
+            b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
+            b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
+            b(3).FaceColor = [0 0 1]; b(3).EdgeColor = 'none';
         end
 
         % Value changed function: ImageListBoxSpec
@@ -282,7 +298,12 @@ classdef aplikasi_exported < matlab.apps.AppBase
             app.ReferenceImage = imread(app.ReferenceEditField.Value);
             r = imhistmatch(app.CurrentImage, app.ReferenceImage, 256);
             figure,imshow(r);
-            figure,imhist(r);
+            figure
+            N = [imhist(r(:,:,1)) imhist(r(:,:,2)) imhist(r(:,:,3))];
+            b = bar(N, 1, "hist");
+            b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
+            b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
+            b(3).FaceColor = [0 0 1]; b(3).EdgeColor = 'none';
         end
     end
 
@@ -318,7 +339,7 @@ classdef aplikasi_exported < matlab.apps.AppBase
 
             % Create ImageListBoxHist
             app.ImageListBoxHist = uilistbox(app.InputPanel);
-            app.ImageListBoxHist.Items = {'hist_1.png', 'hist_2.jpg', 'hist_3.jpg', 'hist_4.jpg', 'hist_5.png', 'hist_6.png', ''};
+            app.ImageListBoxHist.Items = {'hist_1.png', 'hist_2.jpg', 'hist_3.jpg', 'hist_4.jpg', 'hist_5.png', 'hist_6.png'};
             app.ImageListBoxHist.ValueChangedFcn = createCallbackFcn(app, @ImageListBoxHistValueChanged, true);
             app.ImageListBoxHist.Position = [73 44 553 150];
             app.ImageListBoxHist.Value = 'hist_1.png';
@@ -362,7 +383,7 @@ classdef aplikasi_exported < matlab.apps.AppBase
 
             % Create ImageListBoxCont
             app.ImageListBoxCont = uilistbox(app.InputPanel_2);
-            app.ImageListBoxCont.Items = {'cont_1.jpg', 'cont_2.jpg', 'cont_3.jpg', 'cont_4.jpg', 'cont_5.png', 'cont_6.png', ''};
+            app.ImageListBoxCont.Items = {'cont_1.jpg', 'cont_2.jpg', 'cont_3.jpg', 'cont_4.jpg', 'cont_5.png', 'cont_6.png'};
             app.ImageListBoxCont.ValueChangedFcn = createCallbackFcn(app, @ImageListBoxContValueChanged, true);
             app.ImageListBoxCont.Position = [73 13 553 181];
             app.ImageListBoxCont.Value = 'cont_1.jpg';
@@ -421,7 +442,7 @@ classdef aplikasi_exported < matlab.apps.AppBase
 
             % Create ImageListBoxEqua
             app.ImageListBoxEqua = uilistbox(app.InputPanel_3);
-            app.ImageListBoxEqua.Items = {'equa_1.jpg', 'equa_2.jpg', 'equa_3.png', 'equa_4.jpg', 'equa_5.png', 'equa_6.png', ''};
+            app.ImageListBoxEqua.Items = {'equa_1.jpg', 'equa_2.jpg', 'equa_3.png', 'equa_4.jpg', 'equa_5.png', 'equa_6.png'};
             app.ImageListBoxEqua.ValueChangedFcn = createCallbackFcn(app, @ImageListBoxEquaValueChanged, true);
             app.ImageListBoxEqua.Position = [73 44 553 150];
             app.ImageListBoxEqua.Value = 'equa_1.jpg';
