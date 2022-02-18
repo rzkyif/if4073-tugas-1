@@ -2,55 +2,67 @@ classdef aplikasi_exported < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
-        UIFigure                       matlab.ui.Figure
-        TabGroup                       matlab.ui.container.TabGroup
-        HistogramTab                   matlab.ui.container.Tab
-        OutputPanel                    matlab.ui.container.Panel
-        ImageHistO                     matlab.ui.control.Image
-        UIAxesHistO                    matlab.ui.control.UIAxes
-        InputPanel                     matlab.ui.container.Panel
-        ShowimhistforComparisonButton  matlab.ui.control.Button
-        ImageListBoxHist               matlab.ui.control.ListBox
-        ImageListBoxLabel              matlab.ui.control.Label
-        ContrastEnhancementTab         matlab.ui.container.Tab
-        OutputPanel_2                  matlab.ui.container.Panel
-        ResultPanel_2                  matlab.ui.container.Panel
-        ImageContR                     matlab.ui.control.Image
-        UIAxesContR                    matlab.ui.control.UIAxes
-        OriginalPanel_2                matlab.ui.container.Panel
-        ImageContO                     matlab.ui.control.Image
-        UIAxesContO                    matlab.ui.control.UIAxes
-        InputPanel_2                   matlab.ui.container.Panel
-        ImageListBoxCont               matlab.ui.control.ListBox
-        ImageListBox_2Label            matlab.ui.control.Label
-        HistogramEqualizationTab       matlab.ui.container.Tab
-        OutputPanel_3                  matlab.ui.container.Panel
-        ResultPanel_3                  matlab.ui.container.Panel
-        ImageEquaR                     matlab.ui.control.Image
-        UIAxesEquaR                    matlab.ui.control.UIAxes
-        OriginalPanel_3                matlab.ui.container.Panel
-        ImageEquaO                     matlab.ui.control.Image
-        UIAxesEquaO                    matlab.ui.control.UIAxes
-        InputPanel_3                   matlab.ui.container.Panel
-        ShowhisteqforComparisonButton  matlab.ui.control.Button
-        ImageListBoxEqua               matlab.ui.control.ListBox
-        ImageListBox_3Label            matlab.ui.control.Label
-        HistogramSpecificationTab      matlab.ui.container.Tab
-        OutputPanel_4                  matlab.ui.container.Panel
-        ResultPanel_4                  matlab.ui.container.Panel
-        ImageSpecR                     matlab.ui.control.Image
-        UIAxesSpecR                    matlab.ui.control.UIAxes
-        OriginalPanel_4                matlab.ui.container.Panel
-        ImageSpecRef                   matlab.ui.control.Image
-        ImageSpecO                     matlab.ui.control.Image
-        UIAxesSpecRef                  matlab.ui.control.UIAxes
-        UIAxesSpecO                    matlab.ui.control.UIAxes
-        InputPanel_4                   matlab.ui.container.Panel
+        UIFigure                        matlab.ui.Figure
+        TabGroup                        matlab.ui.container.TabGroup
+        HistogramTab                    matlab.ui.container.Tab
+        OutputPanel                     matlab.ui.container.Panel
+        ImageHistO                      matlab.ui.control.Image
+        UIAxesHistO                     matlab.ui.control.UIAxes
+        InputPanel                      matlab.ui.container.Panel
+        ShowimhistforComparisonButton   matlab.ui.control.Button
+        ImageListBoxHist                matlab.ui.control.ListBox
+        ImageListBoxLabel               matlab.ui.control.Label
+        ContrastEnhancementTab          matlab.ui.container.Tab
+        OutputPanel_2                   matlab.ui.container.Panel
+        ResultPanel_2                   matlab.ui.container.Panel
+        ImageContR                      matlab.ui.control.Image
+        UIAxesContR                     matlab.ui.control.UIAxes
+        OriginalPanel_2                 matlab.ui.container.Panel
+        ImageContO                      matlab.ui.control.Image
+        UIAxesContO                     matlab.ui.control.UIAxes
+        InputPanel_2                    matlab.ui.container.Panel
+        ImageListBoxCont                matlab.ui.control.ListBox
+        ImageListBox_2Label             matlab.ui.control.Label
+        HistogramEqualizationTab        matlab.ui.container.Tab
+        OutputPanel_3                   matlab.ui.container.Panel
+        ResultPanel_3                   matlab.ui.container.Panel
+        ImageEquaR                      matlab.ui.control.Image
+        UIAxesEquaR                     matlab.ui.control.UIAxes
+        OriginalPanel_3                 matlab.ui.container.Panel
+        ImageEquaO                      matlab.ui.control.Image
+        UIAxesEquaO                     matlab.ui.control.UIAxes
+        InputPanel_3                    matlab.ui.container.Panel
+        ShowhisteqforComparisonButton   matlab.ui.control.Button
+        ImageListBoxEqua                matlab.ui.control.ListBox
+        ImageListBox_3Label             matlab.ui.control.Label
+        HistogramSpecificationTab       matlab.ui.container.Tab
+        OutputPanel_4                   matlab.ui.container.Panel
+        ResultPanel_4                   matlab.ui.container.Panel
+        ImageSpecR                      matlab.ui.control.Image
+        UIAxesSpecR                     matlab.ui.control.UIAxes
+        OriginalPanel_4                 matlab.ui.container.Panel
+        ImageSpecRef                    matlab.ui.control.Image
+        ImageSpecO                      matlab.ui.control.Image
+        UIAxesSpecRef                   matlab.ui.control.UIAxes
+        UIAxesSpecO                     matlab.ui.control.UIAxes
+        InputPanel_4                    matlab.ui.container.Panel
         ShowimhistmatchforComparisonButton  matlab.ui.control.Button
-        ReferenceEditField             matlab.ui.control.EditField
-        ReferenceEditFieldLabel        matlab.ui.control.Label
-        ImageListBoxSpec               matlab.ui.control.ListBox
-        ImageListBox_4Label            matlab.ui.control.Label
+        ReferenceEditField              matlab.ui.control.EditField
+        ReferenceEditFieldLabel         matlab.ui.control.Label
+        ImageListBoxSpec                matlab.ui.control.ListBox
+        ImageListBox_4Label             matlab.ui.control.Label
+        HistogramEqHSVTab               matlab.ui.container.Tab
+        OutputPanel_5                   matlab.ui.container.Panel
+        ResultPanel_5                   matlab.ui.container.Panel
+        ImageEquaVR                     matlab.ui.control.Image
+        UIAxesEquaVR                    matlab.ui.control.UIAxes
+        OriginalPanel_5                 matlab.ui.container.Panel
+        ImageEquaVO                     matlab.ui.control.Image
+        UIAxesEquaVO                    matlab.ui.control.UIAxes
+        InputPanel_5                    matlab.ui.container.Panel
+        ShowhisteqforComparisonButtonV  matlab.ui.control.Button
+        ImageListBoxEquaV               matlab.ui.control.ListBox
+        ImageListBox_3Label_2           matlab.ui.control.Label
     end
 
     
@@ -207,6 +219,38 @@ classdef aplikasi_exported < matlab.apps.AppBase
                 aImageComponent.ImageSource = results;
             end
         end
+
+        % Fungsi perataan histogram dalam channel HSV
+        function results = EqualizeHSV(~, aImage, aImageComponent)
+
+            % Histogram pada channel HSV
+            hsvImage = rgb2hsv(aImage);
+            vImage = uint8(hsvImage(:,:,3) * 255);
+            s = size(vImage);
+            N = zeros(256,1);
+            for y = 1:s(1)
+                for x = 1:s(2)
+                    v = vImage(y,x);
+                    N(v+1) = N(v+1) + 1;
+                end
+            end
+        
+            % peta transformasi
+            map = round(cumsum(N / (s(1)*s(2))) * 255);
+        
+            for y = 1:s(1)
+                for x = 1:s(2)
+                    hsvImage(y,x,3) = double(map(vImage(y,x)+1)) / 255;
+                end
+            end
+        
+            results = uint8(hsv2rgb(hsvImage) * 255);
+        
+            if exist('aImageComponent', 'var')
+                aImageComponent.ImageSource = results;
+            end
+        
+        end
     end
     
 
@@ -300,6 +344,28 @@ classdef aplikasi_exported < matlab.apps.AppBase
             figure,imshow(r);
             figure
             N = [imhist(r(:,:,1)) imhist(r(:,:,2)) imhist(r(:,:,3))];
+            b = bar(N, 1, "hist");
+            b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
+            b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
+            b(3).FaceColor = [0 0 1]; b(3).EdgeColor = 'none';
+        end
+
+        % Value changed function: ImageListBoxEquaV
+        function ImageListBoxEquaVValueChanged(app, event)
+            app.CurrentImage = imread(strcat('images/', app.ImageListBoxEquaV.Value));
+            app.ImageEquaVO.ImageSource = app.CurrentImage;
+            app.GenerateHistogram(app.CurrentImage, app.UIAxesEquaVO);
+            app.EqualizedImage = app.EqualizeHSV(app.CurrentImage, app.ImageEquaVR);
+            app.GenerateHistogram(app.EqualizedImage, app.UIAxesEquaVR);
+        end
+
+        % Button pushed function: ShowhisteqforComparisonButtonV
+        function ShowhisteqforComparisonButtonVPushed(app, event)
+            app.CurrentImage = imread(strcat('images/', app.ImageListBoxEquaV.Value));
+            eq = histeq(app.CurrentImage, 256);
+            figure,imshow(eq);
+            figure
+            N = [imhist(eq(:,:,1)) imhist(eq(:,:,2)) imhist(eq(:,:,3))];
             b = bar(N, 1, "hist");
             b(1).FaceColor = [1 0 0]; b(1).EdgeColor = 'none';
             b(2).FaceColor = [0 1 0]; b(2).EdgeColor = 'none';
@@ -577,6 +643,71 @@ classdef aplikasi_exported < matlab.apps.AppBase
             % Create ImageSpecR
             app.ImageSpecR = uiimage(app.ResultPanel_4);
             app.ImageSpecR.Position = [0 200 247 181];
+
+            % Create HistogramEqHSVTab
+            app.HistogramEqHSVTab = uitab(app.TabGroup);
+            app.HistogramEqHSVTab.Title = 'Histogram Equalization (HSV)';
+
+            % Create InputPanel_5
+            app.InputPanel_5 = uipanel(app.HistogramEqHSVTab);
+            app.InputPanel_5.Title = 'Input';
+            app.InputPanel_5.Position = [4 429 639 221];
+
+            % Create ImageListBox_3Label_2
+            app.ImageListBox_3Label_2 = uilabel(app.InputPanel_5);
+            app.ImageListBox_3Label_2.HorizontalAlignment = 'right';
+            app.ImageListBox_3Label_2.Position = [19 170 39 22];
+            app.ImageListBox_3Label_2.Text = 'Image';
+
+            % Create ImageListBoxEquaV
+            app.ImageListBoxEquaV = uilistbox(app.InputPanel_5);
+            app.ImageListBoxEquaV.Items = {'equa_1.jpg', 'equa_2.jpg', 'equa_3.png', 'equa_4.jpg', 'equa_5.png', 'equa_6.png'};
+            app.ImageListBoxEquaV.ValueChangedFcn = createCallbackFcn(app, @ImageListBoxEquaVValueChanged, true);
+            app.ImageListBoxEquaV.Position = [73 44 553 150];
+            app.ImageListBoxEquaV.Value = 'equa_1.jpg';
+
+            % Create ShowhisteqforComparisonButtonV
+            app.ShowhisteqforComparisonButtonV = uibutton(app.InputPanel_5, 'push');
+            app.ShowhisteqforComparisonButtonV.ButtonPushedFcn = createCallbackFcn(app, @ShowhisteqforComparisonButtonVPushed, true);
+            app.ShowhisteqforComparisonButtonV.Position = [19 13 607 22];
+            app.ShowhisteqforComparisonButtonV.Text = 'Show "histeq" for Comparison';
+
+            % Create OutputPanel_5
+            app.OutputPanel_5 = uipanel(app.HistogramEqHSVTab);
+            app.OutputPanel_5.Title = 'Output';
+            app.OutputPanel_5.Position = [4 1 639 429];
+
+            % Create OriginalPanel_5
+            app.OriginalPanel_5 = uipanel(app.OutputPanel_5);
+            app.OriginalPanel_5.Title = 'Original';
+            app.OriginalPanel_5.Position = [1 -1 320 410];
+
+            % Create UIAxesEquaVO
+            app.UIAxesEquaVO = uiaxes(app.OriginalPanel_5);
+            xlabel(app.UIAxesEquaVO, 'X')
+            ylabel(app.UIAxesEquaVO, 'Y')
+            zlabel(app.UIAxesEquaVO, 'Z')
+            app.UIAxesEquaVO.Position = [0 11 319 190];
+
+            % Create ImageEquaVO
+            app.ImageEquaVO = uiimage(app.OriginalPanel_5);
+            app.ImageEquaVO.Position = [0 201 319 181];
+
+            % Create ResultPanel_5
+            app.ResultPanel_5 = uipanel(app.OutputPanel_5);
+            app.ResultPanel_5.Title = 'Result';
+            app.ResultPanel_5.Position = [320 -1 318 410];
+
+            % Create UIAxesEquaVR
+            app.UIAxesEquaVR = uiaxes(app.ResultPanel_5);
+            xlabel(app.UIAxesEquaVR, 'X')
+            ylabel(app.UIAxesEquaVR, 'Y')
+            zlabel(app.UIAxesEquaVR, 'Z')
+            app.UIAxesEquaVR.Position = [1 10 316 191];
+
+            % Create ImageEquaVR
+            app.ImageEquaVR = uiimage(app.ResultPanel_5);
+            app.ImageEquaVR.Position = [1 200 316 181];
 
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';
